@@ -9,7 +9,6 @@ local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 
 -- ESP settings
 local espColor = Color3.fromRGB(255, 0, 0) -- Red color for the ESP
-local outlineColor = Color3.fromRGB(0, 0, 0) -- Black color for the outline
 local fontSize = 28 -- Font size for the text
 local chamColor = Color3.fromRGB(255, 0, 0) -- Red chams
 
@@ -23,8 +22,6 @@ nameLabel.Text = "Kraken"
 nameLabel.Size = fontSize
 nameLabel.Color = espColor
 nameLabel.Center = true
-nameLabel.Outline = true -- Enable outline
-nameLabel.OutlineColor = outlineColor -- Set outline color
 
 -- Create a label for the Studs distance
 local studsLabel = Drawing.new("Text")
@@ -32,8 +29,6 @@ studsLabel.Visible = true
 studsLabel.Size = fontSize
 studsLabel.Color = espColor
 studsLabel.Center = true
-studsLabel.Outline = true -- Enable outline
-studsLabel.OutlineColor = outlineColor -- Set outline color
 
 -- Function to update the ESP labels for name and studs
 local function updateESP()
@@ -64,49 +59,20 @@ local function updateESP()
     end
 end
 
--- Function to add Chams (Highlight) to the Kraken
+-- Create and add Chams (Highlight) to the Kraken
 local function addChams(target)
     local highlight = Instance.new("Highlight")
     highlight.Adornee = target
     highlight.FillColor = chamColor
     highlight.FillTransparency = 0.3 -- Semi-transparent chams
-    highlight.OutlineColor = outlineColor -- Black outline
+    highlight.OutlineColor = Color3.fromRGB(0, 0, 0) -- Black outline
     highlight.OutlineTransparency = 0 -- Full opacity for the outline
     highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop -- Always visible, even through walls
     highlight.Parent = target
 end
 
--- Function to remove ESP elements
-local function removeESP()
-    nameLabel.Visible = false
-    studsLabel.Visible = false
-    if kraken then
-        kraken:FindFirstChild("Highlight"):Destroy() -- Remove the highlight
-    end
-end
-
--- Function to check the Kraken's health
-local function checkHealth()
-    while wait(1) do
-        if kraken and kraken:FindFirstChild("Humanoid") then
-            local humanoid = kraken.Humanoid
-            if humanoid.Health <= 0 then
-                removeESP()
-                humanoid.Died:Wait() -- Wait until it respawns
-                wait(2) -- Wait before re-adding ESP (adjust as necessary)
-                addChams(kraken)
-            else
-                updateESP()
-            end
-        end
-    end
-end
-
 -- Add Chams to the Kraken
 addChams(kraken)
-
--- Start checking the Kraken's health
-checkHealth()
 
 -- Continuously update the ESP labels and distance
 RunService.RenderStepped:Connect(updateESP)
